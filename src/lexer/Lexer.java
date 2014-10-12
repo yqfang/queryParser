@@ -25,7 +25,7 @@ public class Lexer {
     }
 
     public Lexer(String stm) {
-        this.stm = (stm + ";").toCharArray();//to make sure every query ends with a ';
+        this.stm = (stm + ";").toCharArray();//to make sure every query ends with ;
         
         lineNum = 1;
     }
@@ -35,13 +35,6 @@ public class Lexer {
     // Return TOKEN_EOF when reaching the end of the input stream.
     private Token nextTokenInternal() throws Exception {
         char c = read();
-        
-        if (';' == c)
-            // The value for "lineNum" is now "null",
-            // you should modify this to an appropriate
-            // line number for the "EOF" token.
-            return new Token(Kind.TOKEN_EOF, lineNum, ";");
-
         // skip all kinds of "blanks"
         while (' ' == c || '\t' == c || '\n' == c || '\r' == c) {
             if ('\n' == c) {
@@ -97,7 +90,12 @@ public class Lexer {
             } while (c != '\'');
             return new Token(Kind.TOKEN_LIT, lineNum, buffer.toString());
         }
-
+        
+        if (';' == c)
+            // The value for "lineNum" is now "null",
+            // you should modify this to an appropriate
+            // line number for the "EOF" token.
+            return new Token(Kind.TOKEN_EOF, lineNum, ";");
         switch (c) {
         case '>':
             if (read() == '=') {
@@ -129,8 +127,9 @@ public class Lexer {
             return new Token(Kind.TOKEN_RPAREN, lineNum);
         case ',':
             return new Token(Kind.TOKEN_COMMA, lineNum);
+        
         default:
-           return null;
+           throw new Exception("Known CHAR: " + String.valueOf(c));
         }
     }
 

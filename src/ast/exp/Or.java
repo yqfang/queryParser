@@ -20,4 +20,5 @@ public class Or extends Compound{
     public Or or(E expression) {
         return (Or) super.add(expression);
     }
+    
 }

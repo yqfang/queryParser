@@ -35,6 +35,12 @@ public class Comparison extends E {
         this.operator = operator;
     }
 
+    @Override
+    public boolean hasChildren() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     public enum Operator {
         /**
          * The equals operator.
@@ -60,5 +66,11 @@ public class Comparison extends E {
          * The not equals operator.
          */
         NEQ,
+    }
+
+    @Override
+    public E add(E e) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -8,7 +8,9 @@ import java.util.List;
 
 public class Compound extends E {
     protected List<E> children;
-
+    public Compound(){
+        this.children = new LinkedList<E>();
+    }
     public Compound(E... exp) {
         this.children = new LinkedList<E>(Arrays.asList(exp));
     }
@@ -20,4 +22,8 @@ public class Compound extends E {
         children.add(exp);
         return this;
     }
+    public boolean hasChildren(){
+        return !children.isEmpty();
+    }
+
 }

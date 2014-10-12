@@ -6,9 +6,9 @@ import lexer.Token.Kind;
 import ast.ColumnList;
 import ast.Query;
 import ast.Table;
-import ast.exp.And;
 import ast.exp.Comparison;
 import ast.exp.Comparison.Operator;
+import ast.exp.Compound;
 import ast.exp.E;
 import ast.exp.Or;
 
@@ -17,7 +17,7 @@ public class Parser {
     Token current;
 
     public Parser(String stm) {
-        lexer = new Lexer(stm + ";");
+        lexer = new Lexer(stm);
         current = lexer.nextToken();
     }
 
@@ -40,13 +40,15 @@ public class Parser {
         System.exit(1);
         return;
     }
-    //Atom
+
+    // Atom
     // -> LITERAL
-    private String parseAtom(){
+    private String parseAtom() {
         String lit = current.lexeme;
         eatToken(Kind.TOKEN_LIT);
         return lit;
     }
+
     // Add
     // -> (condition)
 
@@ -55,21 +57,27 @@ public class Parser {
         switch (current.kind) {
         case TOKEN_ID:
             String left = current.lexeme;
-            Comparison.Operator opt = null; 
+            Comparison.Operator opt = null;
             advance();
-            switch(current.kind){
+            switch (current.kind) {
             case TOKEN_LT:
-                opt = Operator.LT;break;
+                opt = Operator.LT;
+                break;
             case TOKEN_LTE:
-                opt = Operator.LTE;break;
+                opt = Operator.LTE;
+                break;
             case TOKEN_NOT:
-                opt = Operator.NEQ;break;
+                opt = Operator.NEQ;
+                break;
             case TOKEN_GT:
-                opt = Operator.GT;break;
+                opt = Operator.GT;
+                break;
             case TOKEN_GTE:
-                opt = Operator.GTE;break;
+                opt = Operator.GTE;
+                break;
             case TOKEN_EQ:
-                opt = Operator.EQ;break;
+                opt = Operator.EQ;
+                break;
             default:
                 System.out.println("Expects: " + "<|<=|<>|=|!|>=|>");
                 System.out.println("But got: " + current.kind.toString());
@@ -91,11 +99,13 @@ public class Parser {
 
     // Or -> And and And
     private E parseOrCondition() {
-        And and = new And();
-        and.add(parseAndCondition());
+        E or = new Or();
+        E and = parseAndCondition();
         while (current.kind == Kind.TOKEN_AND) {
             advance();
-            and.add(parseAndCondition());
+            or.add(parseAndCondition());
+            if (or.hasChildren())
+                return or.add(and);
         }
         return and;
     }
@@ -103,11 +113,13 @@ public class Parser {
     // Condition -> Or or Or
     // -> Or
     private E parseCondtition() {
-        Or or = new Or();
-        or.add(parseOrCondition());
+        E con = new Compound();
+        E or = parseOrCondition();
         while (current.kind == Kind.TOKEN_OR) {
             advance();
-            or.add(parseOrCondition());
+            con.add(parseOrCondition());
+            if (con.hasChildren())
+                return con.add(or);
         }
         return or;
     }
@@ -135,7 +147,11 @@ public class Parser {
         eatToken(Kind.TOKEN_ID);
         eatToken(Kind.TOKEN_WHERE);
         E exp = parseCondtition();
-        eatToken(Kind.TOKEN_EOF);
+        if (current.kind != Kind.TOKEN_EOF) {
+            System.out.println("Expects: " + Kind.TOKEN_EOF.toString());
+            System.out.println("But got: " + current.kind.toString());
+            System.exit(1);
+        }
         return new Query(cols, new Table(tbl), exp);
     }
 }

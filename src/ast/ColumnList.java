@@ -8,6 +8,9 @@ public class ColumnList {
     public ColumnList() {
         list = new LinkedList<String>();
     }
+    public ColumnList(List<String> list){
+        this.list = list;
+    }
     public void addCol(String col)
     {
         this.list.add(col);
