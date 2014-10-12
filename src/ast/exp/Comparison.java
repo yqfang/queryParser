@@ -1,9 +1,10 @@
 package ast.exp;
 
+import ast.Operator;
+
 public class Comparison extends E {
     public String left;
     public String right;
-    public Operator operator;
 
     public Comparison(String left, String right, Operator operator) {
         this.left = left;
@@ -41,32 +42,6 @@ public class Comparison extends E {
         return false;
     }
 
-    public enum Operator {
-        /**
-         * The equals operator.
-         */
-        EQ,
-        /**
-         * The greater than operator.
-         */
-        GT,
-        /**
-         * The greater than or equals operator.
-         */
-        GTE,
-        /**
-         * The less than operator.
-         */
-        LT,
-        /**
-         * The less than or equals operator.
-         */
-        LTE,
-        /**
-         * The not equals operator.
-         */
-        NEQ,
-    }
 
     @Override
     public E add(E e) {

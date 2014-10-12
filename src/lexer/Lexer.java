@@ -142,7 +142,7 @@ public class Lexer {
             e.printStackTrace();
             System.exit(1);
         }
-           System.out.println(t.toString());
+           //System.out.println(t.toString());
         return t;
     }
 }

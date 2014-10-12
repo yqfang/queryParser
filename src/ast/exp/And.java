@@ -2,10 +2,15 @@ package ast.exp;
 
 import java.util.Collection;
 
+import ast.Operator;
+
     public class And extends Compound {
 
         public And() {
             super();
+        }
+        public And(Operator opt) {
+            super(opt);
         }
 
         public And(E... expressions) {

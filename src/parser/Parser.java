@@ -4,10 +4,9 @@ import lexer.Lexer;
 import lexer.Token;
 import lexer.Token.Kind;
 import ast.ColumnList;
+import ast.Operator;
 import ast.Query;
-import ast.Table;
 import ast.exp.Comparison;
-import ast.exp.Comparison.Operator;
 import ast.exp.Compound;
 import ast.exp.E;
 import ast.exp.Or;
@@ -51,13 +50,12 @@ public class Parser {
 
     // Add
     // -> (condition)
-
     // -> id <|<=|<>|=|!|>=|> LIT
     private E parseAndCondition() {
         switch (current.kind) {
         case TOKEN_ID:
             String left = current.lexeme;
-            Comparison.Operator opt = null;
+            Operator opt = null;
             advance();
             switch (current.kind) {
             case TOKEN_LT:
@@ -99,29 +97,35 @@ public class Parser {
 
     // Or -> And and And
     private E parseOrCondition() {
-        E or = new Or();
+        Or or = new Or(Operator.AND);
         E and = parseAndCondition();
         while (current.kind == Kind.TOKEN_AND) {
             advance();
-            or.add(parseAndCondition());
-            if (or.hasChildren())
-                return or.add(and);
+            if(and.operator == Operator.AND)
+                and.add(parseOrCondition());
+            else
+            or.add(parseAndCondition());//optimize the brace propagate
         }
+        if (!or.hasChildren())
         return and;
+        return or.add(and);
     }
 
-    // Condition -> Or or Or
+    // Compound -> Or or Or
     // -> Or
     private E parseCondtition() {
-        E con = new Compound();
+        Compound con = new Compound(Operator.OR);
         E or = parseOrCondition();
         while (current.kind == Kind.TOKEN_OR) {
             advance();
-            con.add(parseOrCondition());
-            if (con.hasChildren())
-                return con.add(or);
+            if(or.operator == Operator.OR)
+                or.add(parseOrCondition());
+            else
+            con.add(parseOrCondition());//optimize the brace propagate
         }
+        if (!con.hasChildren())
         return or;
+        return con.add(or);
     }
 
     // ColumnList -> id ColumnRest*
@@ -138,7 +142,7 @@ public class Parser {
         return cols;
     }
 
-    // Main -> select columnlist from id where conditions
+    // Main -> select columnlist from id where Compound
     public Query parse() {
         eatToken(Kind.TOKEN_SELECT);
         ColumnList cols = parseColumnList();
@@ -152,6 +156,6 @@ public class Parser {
             System.out.println("But got: " + current.kind.toString());
             System.exit(1);
         }
-        return new Query(cols, new Table(tbl), exp);
+        return new Query(cols, tbl, exp);
     }
 }
