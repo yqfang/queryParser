@@ -91,11 +91,11 @@ public class Lexer {
             return new Token(Kind.TOKEN_LIT, lineNum, buffer.toString());
         }
         
-        if (';' == c)
+        if (';' == c){
             // The value for "lineNum" is now "null",
             // you should modify this to an appropriate
             // line number for the "EOF" token.
-            return new Token(Kind.TOKEN_EOF, lineNum, ";");
+            return new Token(Kind.TOKEN_EOF, lineNum, ";");}
         switch (c) {
         case '>':
             if (read() == '=') {
@@ -142,7 +142,7 @@ public class Lexer {
             e.printStackTrace();
             System.exit(1);
         }
-           //System.out.println(t.toString());
+           System.out.println(t.toString());
         return t;
     }
 }

@@ -48,7 +48,7 @@ public class Parser {
         return lit;
     }
 
-    // Add
+    // And
     // -> (condition)
     // -> id <|<=|<>|=|!|>=|> LIT
     private E parseAndCondition() {
@@ -95,7 +95,8 @@ public class Parser {
         }
     }
 
-    // Or -> And and And
+    // Or      -> And AndRest*
+    // AndRest -> and And
     private E parseOrCondition() {
         Or or = new Or(Operator.AND);
         E and = parseAndCondition();
@@ -112,7 +113,7 @@ public class Parser {
     }
 
     // Compound -> Or or Or
-    // -> Or
+    //          -> Or
     private E parseCondtition() {
         Compound con = new Compound(Operator.OR);
         E or = parseOrCondition();
@@ -142,7 +143,7 @@ public class Parser {
         return cols;
     }
 
-    // Main -> select columnlist from id where Compound
+    // Main -> select columnlist from id where condition
     public Query parse() {
         eatToken(Kind.TOKEN_SELECT);
         ColumnList cols = parseColumnList();
@@ -156,6 +157,8 @@ public class Parser {
             System.out.println("But got: " + current.kind.toString());
             System.exit(1);
         }
+        System.out.println("Compilation completed!");
+        System.out.println("There is no syntax error.");
         return new Query(cols, tbl, exp);
     }
 }

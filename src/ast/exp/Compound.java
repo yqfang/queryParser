@@ -32,5 +32,8 @@ public class Compound extends E {
     public boolean hasChildren(){
         return !children.isEmpty();
     }
+    public List<E> getChildren() {
+        return children;
+    }
 
 }
