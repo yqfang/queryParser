@@ -13,15 +13,15 @@ import ast.Operator;
             super(opt);
         }
 
-        public And(E... expressions) {
+        public And(Compound... expressions) {
             super(expressions);
         }
 
-        public And(Collection<E> expressions) {
+        public And(Collection<Compound> expressions) {
             super(expressions);
         }
 
-        public And and(E expression) {
+        public And and(Compound expression) {
             return (And) super.add(expression);
         }
 }

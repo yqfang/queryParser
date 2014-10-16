@@ -2,9 +2,9 @@ package ast.exp;
 
 import ast.Operator;
 
-public class Comparison extends E {
-    public String left;
-    public String right;
+public class Comparison extends Compound {
+//    protected String left;
+//    protected String right;
 
     public Comparison(String left, String right, Operator operator) {
         this.left = left;
@@ -44,7 +44,7 @@ public class Comparison extends E {
 
 
     @Override
-    public E add(E e) {
+    public Compound add(Compound e) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -11,17 +11,17 @@ public class Or extends Compound{
         super(opt);
     }
     
-    public Or(E... expressions) {
+    public Or(Compound... expressions) {
         super(expressions);
     }
 
     
-    public Or(Collection<E> expressions) {
+    public Or(Collection<Compound> expressions) {
         super(expressions);
     }
 
    
-    public Or or(E expression) {
+    public Or or(Compound expression) {
         return (Or) super.add(expression);
     }
     

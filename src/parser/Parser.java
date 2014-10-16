@@ -1,15 +1,16 @@
 package parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lexer.Lexer;
 import lexer.Token;
 import lexer.Token.Kind;
-import ast.ColumnList;
 import ast.Operator;
-import ast.Query;
 import ast.exp.Comparison;
 import ast.exp.Compound;
-import ast.exp.E;
 import ast.exp.Or;
+import bean.Query;
 
 public class Parser {
     Lexer lexer;
@@ -51,7 +52,7 @@ public class Parser {
     // And
     // -> (condition)
     // -> id <|<=|<>|=|!|>=|> LIT
-    private E parseAndCondition() {
+    private Compound parseAndCondition() {
         switch (current.kind) {
         case TOKEN_ID:
             String left = current.lexeme;
@@ -86,7 +87,7 @@ public class Parser {
             return new Comparison(left, lit, opt);
         case TOKEN_LPAREN:
             advance();
-            E exp = parseCondtition();
+            Compound exp = parseCondtition();
             eatToken(Kind.TOKEN_RPAREN);
             return exp;
         default:
@@ -95,49 +96,49 @@ public class Parser {
         }
     }
 
-    // Or      -> And AndRest*
+    // Or -> And AndRest*
     // AndRest -> and And
-    private E parseOrCondition() {
+    private Compound parseOrCondition() {
         Or or = new Or(Operator.AND);
-        E and = parseAndCondition();
+        Compound and = parseAndCondition();
         while (current.kind == Kind.TOKEN_AND) {
             advance();
-            if(and.operator == Operator.AND)
+            if (and.operator == Operator.AND)
                 and.add(parseOrCondition());
             else
-            or.add(parseAndCondition());//optimize the brace propagate
+                or.add(parseAndCondition());// optimize the brace propagate
         }
         if (!or.hasChildren())
-        return and;
+            return and;
         return or.add(and);
     }
 
     // Compound -> Or or Or
-    //          -> Or
-    private E parseCondtition() {
+    // -> Or
+    private Compound parseCondtition() {
         Compound con = new Compound(Operator.OR);
-        E or = parseOrCondition();
+        Compound or = parseOrCondition();
         while (current.kind == Kind.TOKEN_OR) {
             advance();
-            if(or.operator == Operator.OR)
+            if (or.operator == Operator.OR)
                 or.add(parseOrCondition());
             else
-            con.add(parseOrCondition());//optimize the brace propagate
+                con.add(parseOrCondition());// optimize the brace propagate
         }
         if (!con.hasChildren())
-        return or;
+            return or;
         return con.add(or);
     }
 
     // ColumnList -> id ColumnRest*
     // ColumnRest -> , id
-    private ColumnList parseColumnList() {
-        ColumnList cols = new ColumnList();
-        cols.addCol(current.lexeme);
+    private List<String> parseColumnList() {
+        List<String> cols = new ArrayList<String>();
+        cols.add(current.lexeme);
         eatToken(Kind.TOKEN_ID);
         while (current.kind == Kind.TOKEN_COMMA) {
             advance();
-            cols.addCol(current.lexeme);
+            cols.add(current.lexeme);
             eatToken(Kind.TOKEN_ID);
         }
         return cols;
@@ -146,12 +147,12 @@ public class Parser {
     // Main -> select columnlist from id where condition
     public Query parse() {
         eatToken(Kind.TOKEN_SELECT);
-        ColumnList cols = parseColumnList();
+        List<String> cols = parseColumnList();
         eatToken(Kind.TOKEN_FROM);
         String tbl = current.lexeme;
         eatToken(Kind.TOKEN_ID);
         eatToken(Kind.TOKEN_WHERE);
-        E exp = parseCondtition();
+        Compound exp = parseCondtition();
         if (current.kind != Kind.TOKEN_EOF) {
             System.out.println("Expects: " + Kind.TOKEN_EOF.toString());
             System.out.println("But got: " + current.kind.toString());
