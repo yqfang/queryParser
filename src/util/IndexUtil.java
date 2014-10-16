@@ -1,76 +1,58 @@
-package test;
+package util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BestCover {
+import bean.Index;
 
-    public static void main(String[] args) {
-        /*
-         * given condition: a, b, c, d search in index collection:
-         * {a},{b},{c},{d},{a,b,c} return {a,b,c},{d};
-         */
+public class IndexUtil {
 
-        List<String> a = new ArrayList<String>();
-        a.add("age");
-        a.add("sex");
-        List<List<String>> c = new ArrayList<List<String>>();
-        List<String> c1 = new ArrayList<String>();
-        c1.add("age");
-        List<String> c2 = new ArrayList<String>();
-        c2.add("sex");
-        c2.add("gg");
-        List<String> c3 = new ArrayList<String>();
-        c3.add("sex");
-        List<String> c4 = new ArrayList<String>();
-        c4.add("d");
-
-        c.add(c1);
-        c.add(c2);
-        c.add(c3);
-        c.add(c4);
-        if(null == getBestCover(c, a))
-        System.out.println("no match");
-        else
-            System.out.println(getBestCover(c, a));
-
-    }
-    /** 
-     * f[i,S]表示前i个集合覆盖列表S,所需要的集合最小数目
-     * 则有[i,S] = min (f[i-1,S], f[i-1, S除去cS[i]])
+    /**
+     * f[i,S]表示前i个集合覆盖列表S,所需要的集合最小数目 则有[i,S] = min (f[i-1,S], f[i-1, S除去cS[i]])
      * 初值f[0,0] = 0，其余f[i,S]都是INF
-     * @param pc the index list collection
-     * @param a the condition collection
+     * 
+     * @param pc
+     *            the index list collection
+     * @param a
+     *            the condition collection
      * @return the best matched index collection or null if not matched
+     * @throws Exception
      */
-    public static List<List<String>> getBestCover(List<List<String>> pc, List<String> a) {
+    public static List<Index> getBestIndexes(Map<String, List<String>> mp,
+            List<String> a) throws Exception {
         int M = 10; // the max value for collection capacity;
         int N = 200; // the max amount of collection
         int[][] f = new int[N][1 << M];// f(i, S)
         String[][] s = new String[N][1 << M];// s(i, S)
         List<List<String>> c = new ArrayList<List<String>>(); // the string
-                                                              // collection
-                                                              // after fliter
+        // collection
         Map<String, Integer> id = new HashMap<String, Integer>();// string map
         Map<String, List<String>> cmap = new HashMap<String, List<String>>();// collection
-                                                                             // dic
-        List<List<String>> rs = new ArrayList<List<String>>();
-
+        List<List<String>> pc = new ArrayList<List<String>>();
+        List<Index> result = new ArrayList<Index>();
+        Map<List<String>, String> reverseMp = new HashMap<List<String>, String>();
         int cid = 0; // String id
         int[] bc;
         int ba = 0;// binary string collection
-
         int INF = (1 << 28);
-
+        /*
+         * reverse the mp map
+         */
+        for (String str : mp.keySet()) {
+            reverseMp.put(mp.get(str), str);
+        }
         for (String str : a) {
-            if (!id.containsKey(str)) 
+            if (!id.containsKey(str))
                 id.put(str, cid++);
+        }
+        for (String str : mp.keySet()) {
+            pc.add(mp.get(str));
         }
         for (List<String> pl : pc) {
             List<String> l = new ArrayList<String>();
-            for (String str : pl) 
+            for (String str : pl)
                 if (id.containsKey(str))
                     l.add(str);
             if (l.size() == pl.size())
@@ -112,14 +94,15 @@ public class BestCover {
             }
         }
         String rss = s[c.size()][(1 << cid) - 1];
-        if(null == rss)
-            return null;
+        if (null == rss)
+            throw new Exception("go to hive");
         String[] ra = rss.split(",");
         for (String ss : ra) {
             List<String> ll = cmap.get(ss);
-            if (null != ll) 
-                rs.add(ll);
+            if (null != ll) {
+                result.add(new Index(reverseMp.get(ll), ll));
+            }
         }
-        return rs;
+        return result;
     }
 }
