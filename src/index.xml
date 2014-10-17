@@ -21,8 +21,11 @@
 	<index name="index6" table="table2">
 		<column family="d" qualifier="age" length="4" />
 	</index>
-	<index name="index6" table="table2">
+	<index name="index7" table="table2">
 		<column family="d" qualifier="sex" length="4" />
+	</index>
+		<index name="index8" table="table1">
+		<column family="d" qualifier="addr2" length="4" />
 	</index>
 	
 </indexes>

@@ -16,15 +16,15 @@ public class IndexUtil {
      * f[i,S] = min (f[i-1,S], f[i-1, S除去cS[i]])
      * 初值f[0,0] = 0，其余f[i,S]都是INF
      * 
-     * @param pc
-     *            the index list collection
+     * @param indexes
+     *            the indexes set ready for match
      * @param a
-     *            the condition collection
+     *            the condition column list
      * @return the best matched index collection or null if not matched
      * @throws Exception
      */
     public static Set<Index> getBestIndexes(Set<Index> indexes,
-            List<String> a) throws Exception {
+            List<String> cols) throws Exception {
         int M = 10; // the max value for collection capacity;
         int N = 200; // the max amount of collection
         int[][] f = new int[N][1 << M];// f(i, S)
@@ -50,7 +50,7 @@ public class IndexUtil {
         for (String str : mp.keySet()) {
             reverseMp.put(mp.get(str), str);
         }
-        for (String str : a) {
+        for (String str : cols) {
             if (!id.containsKey(str))
                 id.put(str, cid++);
         }
@@ -70,7 +70,7 @@ public class IndexUtil {
          * construct binary a collection to a int value;
          */
         int iid = 0;
-        for (String str : a) {
+        for (String str : cols) {
             iid = id.get(str);
             ba = ba | (1 << iid);
         }
@@ -85,6 +85,9 @@ public class IndexUtil {
             }
             cmap.put(String.valueOf(bc[i]), c.get(i - 1));
         }
+        /*
+         * the dp function
+         */
         for (int S = 0; S < (1 << cid); S++)
             f[0][S] = INF;
         f[0][0] = 0;
@@ -104,7 +107,7 @@ public class IndexUtil {
         if (null == rss)
         {
             System.err.println("Go to hive !");
-            System.exit(-1);
+            return result;
         }
         String[] ra = rss.split(",");
         for (String ss : ra) {
