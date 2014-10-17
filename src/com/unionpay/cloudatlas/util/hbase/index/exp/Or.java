@@ -1,7 +1,5 @@
-package com.unionpay.cloudatlas.util.hbase.index.ast.exp;
+package com.unionpay.cloudatlas.util.hbase.index.exp;
 import java.util.Collection;
-
-import com.unionpay.cloudatlas.util.hbase.index.ast.Operator;
 public class Or extends Compound{
     
     public Or() {

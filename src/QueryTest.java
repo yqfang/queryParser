@@ -7,6 +7,12 @@ import com.unionpay.cloudatlas.util.hbase.index.util.XMLUtil;
 
 public class QueryTest {
     public static void main(String[] args) throws Exception {
+        /*
+         * select age, sex from table1 where age > 1 and sex = 2;
+         * select age, sex from table1 where age > 1 and gender = 2;
+         * select age, sex from table1 where age > 1 and sex = 2 or addr2 = 3;
+         * 
+         */
         Scanner scan = new Scanner(System.in);
         Query query;
         while(scan.hasNextLine()){

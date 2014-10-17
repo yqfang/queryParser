@@ -12,7 +12,8 @@ import com.unionpay.cloudatlas.util.hbase.index.bean.Index;
 public class IndexUtil {
 
     /**
-     * f[i,S]表示前i个集合覆盖列表S,所需要的集合最小数目 则有[i,S] = min (f[i-1,S], f[i-1, S除去cS[i]])
+     * f[i,S]表示前i个集合覆盖列表S,所需要的集合最小数目 则有
+     * f[i,S] = min (f[i-1,S], f[i-1, S除去cS[i]])
      * 初值f[0,0] = 0，其余f[i,S]都是INF
      * 
      * @param pc

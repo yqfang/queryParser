@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.unionpay.cloudatlas.util.hbase.index.ast.exp.Comparison;
-import com.unionpay.cloudatlas.util.hbase.index.ast.exp.Compound;
+import com.unionpay.cloudatlas.util.hbase.index.exp.Comparison;
+import com.unionpay.cloudatlas.util.hbase.index.exp.Compound;
 
 public class Query {
     private List<String> columns;

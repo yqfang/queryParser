@@ -12,5 +12,17 @@
 		<column family="d" qualifier="age" length="4" />
 		<column family="d" qualifier="addr2" length="4" />
 	</index>
+	<index name="index4" table="table1">
+		<column family="d" qualifier="age" length="4" />
+	</index>
+	<index name="index5" table="table1">
+		<column family="d" qualifier="sex" length="4" />
+	</index>
+	<index name="index6" table="table2">
+		<column family="d" qualifier="age" length="4" />
+	</index>
+	<index name="index6" table="table2">
+		<column family="d" qualifier="sex" length="4" />
+	</index>
 	
 </indexes>
