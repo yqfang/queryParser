@@ -1,4 +1,4 @@
-package util;
+package com.unionpay.cloudatlas.util.hbase.index.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import bean.Index;
+import com.unionpay.cloudatlas.util.hbase.index.bean.Index;
 
 public class IndexUtil {
 

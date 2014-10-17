@@ -1,4 +1,4 @@
-package ast;
+package com.unionpay.cloudatlas.util.hbase.index.ast;
 
 public enum Operator {
     AND,

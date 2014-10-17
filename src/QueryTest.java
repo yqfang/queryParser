@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
-import parser.Parser;
-import util.IndexUtil;
-import util.XMLUtil;
-import bean.Query;
+import com.unionpay.cloudatlas.util.hbase.index.bean.Query;
+import com.unionpay.cloudatlas.util.hbase.index.parser.Parser;
+import com.unionpay.cloudatlas.util.hbase.index.util.IndexUtil;
+import com.unionpay.cloudatlas.util.hbase.index.util.XMLUtil;
 
 public class QueryTest {
     public static void main(String[] args) throws Exception {

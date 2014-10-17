@@ -1,16 +1,16 @@
-package parser;
+package com.unionpay.cloudatlas.util.hbase.index.parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lexer.Lexer;
-import lexer.Token;
-import lexer.Token.Kind;
-import ast.Operator;
-import ast.exp.Comparison;
-import ast.exp.Compound;
-import ast.exp.Or;
-import bean.Query;
+import com.unionpay.cloudatlas.util.hbase.index.ast.Operator;
+import com.unionpay.cloudatlas.util.hbase.index.ast.exp.Comparison;
+import com.unionpay.cloudatlas.util.hbase.index.ast.exp.Compound;
+import com.unionpay.cloudatlas.util.hbase.index.ast.exp.Or;
+import com.unionpay.cloudatlas.util.hbase.index.bean.Query;
+import com.unionpay.cloudatlas.util.hbase.index.lexer.Lexer;
+import com.unionpay.cloudatlas.util.hbase.index.lexer.Token;
+import com.unionpay.cloudatlas.util.hbase.index.lexer.Token.Kind;
 
 public class Parser {
     Lexer lexer;

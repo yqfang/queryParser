@@ -1,8 +1,8 @@
-package lexer;
+package com.unionpay.cloudatlas.util.hbase.index.lexer;
 
 import java.util.HashMap;
 
-import lexer.Token.Kind;
+import com.unionpay.cloudatlas.util.hbase.index.lexer.Token.Kind;
 
 public class Lexer {
     char[] stm; // the statement to be analyzed

@@ -1,4 +1,4 @@
-package bean;
+package com.unionpay.cloudatlas.util.hbase.index.bean;
 
 import java.util.List;
 

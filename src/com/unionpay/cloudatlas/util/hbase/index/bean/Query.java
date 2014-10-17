@@ -1,11 +1,11 @@
-package bean;
+package com.unionpay.cloudatlas.util.hbase.index.bean;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import ast.exp.Comparison;
-import ast.exp.Compound;
+import com.unionpay.cloudatlas.util.hbase.index.ast.exp.Comparison;
+import com.unionpay.cloudatlas.util.hbase.index.ast.exp.Compound;
 
 public class Query {
     private List<String> columns;

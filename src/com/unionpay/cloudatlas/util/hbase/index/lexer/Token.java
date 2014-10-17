@@ -1,4 +1,4 @@
-package lexer;
+package com.unionpay.cloudatlas.util.hbase.index.lexer;
 
 public class Token {
     public enum Kind {

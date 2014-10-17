@@ -1,11 +1,11 @@
-package ast.exp;
+package com.unionpay.cloudatlas.util.hbase.index.ast.exp;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import ast.Operator;
+import com.unionpay.cloudatlas.util.hbase.index.ast.Operator;
 
 
 public class Compound {

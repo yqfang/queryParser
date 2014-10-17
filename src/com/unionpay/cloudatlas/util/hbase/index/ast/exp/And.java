@@ -1,8 +1,8 @@
-package ast.exp;
+package com.unionpay.cloudatlas.util.hbase.index.ast.exp;
 
 import java.util.Collection;
 
-import ast.Operator;
+import com.unionpay.cloudatlas.util.hbase.index.ast.Operator;
 
     public class And extends Compound {
 

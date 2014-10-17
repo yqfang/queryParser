@@ -1,6 +1,6 @@
-package ast.exp;
+package com.unionpay.cloudatlas.util.hbase.index.ast.exp;
 
-import ast.Operator;
+import com.unionpay.cloudatlas.util.hbase.index.ast.Operator;
 
 public class Comparison extends Compound {
 //    protected String left;
