@@ -42,7 +42,7 @@ public class Query {
         this.condition = condition;
     }
 
-    public List<String> getLeafLeft() {
+    public List<String> getConditionCols() {
         List<String> l = new ArrayList<String>();
         LinkedList<Compound> ll = new LinkedList<Compound>();
         Compound p = (Compound) condition;

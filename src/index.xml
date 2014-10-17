@@ -5,7 +5,7 @@
 		<column family="d" qualifier="sex" length="4" />
 	</index>
 	<index name="index2" table="table1">
-		<column family="d" qualifier="age" length="4" />
+		<column family="d" qualifier="sex" length="4" />
 		<column family="d" qualifier="addr" length="4" />
 	</index>
 	<index name="index3" table="table1">

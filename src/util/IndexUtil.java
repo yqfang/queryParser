@@ -2,8 +2,10 @@ package util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import bean.Index;
 
@@ -20,7 +22,7 @@ public class IndexUtil {
      * @return the best matched index collection or null if not matched
      * @throws Exception
      */
-    public static List<Index> getBestIndexes(Map<String, List<String>> mp,
+    public static Set<Index> getBestIndexes(Set<Index> indexes,
             List<String> a) throws Exception {
         int M = 10; // the max value for collection capacity;
         int N = 200; // the max amount of collection
@@ -30,13 +32,17 @@ public class IndexUtil {
         // collection
         Map<String, Integer> id = new HashMap<String, Integer>();// string map
         Map<String, List<String>> cmap = new HashMap<String, List<String>>();// collection
+        Map<String, List<String>> mp = new HashMap<String, List<String>>();// a map for the indexes set
         List<List<String>> pc = new ArrayList<List<String>>();
-        List<Index> result = new ArrayList<Index>();
+        Set<Index> result = new HashSet<Index>();
         Map<List<String>, String> reverseMp = new HashMap<List<String>, String>();
         int cid = 0; // String id
         int[] bc;
         int ba = 0;// binary string collection
         int INF = (1 << 28);
+        for(Index index : indexes){
+            mp.put(index.getName(), index.getCols());
+        }
         /*
          * reverse the mp map
          */
@@ -95,7 +101,10 @@ public class IndexUtil {
         }
         String rss = s[c.size()][(1 << cid) - 1];
         if (null == rss)
-            throw new Exception("go to hive");
+        {
+            System.err.println("Go to hive !");
+            System.exit(-1);
+        }
         String[] ra = rss.split(",");
         for (String ss : ra) {
             List<String> ll = cmap.get(ss);

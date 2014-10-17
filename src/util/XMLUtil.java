@@ -3,9 +3,9 @@ package util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,12 +21,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import bean.Index;
+
 public class XMLUtil {
 
-    public static Map<String, List<String>> read(String table) {
-        Map<String, List<String>> map = new HashMap<String, List<String>>();
+    public static Set<Index> read(String table) {
+        Set<Index> set = new HashSet<Index>();
         List<String> list;
         String indexName;
+        Index index;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -35,7 +38,7 @@ public class XMLUtil {
             Document doc = builder.parse(in);
             XPathFactory factory = XPathFactory.newInstance();
             XPath xpath = factory.newXPath();
-            
+
             XPathExpression expr = xpath.compile("/indexes/index[@table='"
                     + table + "']");
             NodeList nodes = (NodeList) expr.evaluate(doc,
@@ -52,7 +55,8 @@ public class XMLUtil {
                         list.add(col.getAttributes().getNamedItem("qualifier")
                                 .getNodeValue());
                 }
-                map.put(indexName, list);
+                index = new Index(indexName, list);
+                set.add(index);
             }
         } catch (XPathExpressionException e) {
             e.printStackTrace();
@@ -63,6 +67,6 @@ public class XMLUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return map;
+        return set;
     }
 }

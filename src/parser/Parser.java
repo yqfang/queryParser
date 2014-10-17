@@ -29,14 +29,14 @@ public class Parser {
         if (kind == current.kind)
             advance();
         else {
-            System.out.println("Expects: " + kind.toString());
-            System.out.println("But got: " + current.kind.toString());
+            System.err.println("Expects: " + kind.toString());
+            System.err.println("But got: " + current.kind.toString());
             System.exit(1);
         }
     }
 
     private void error() {
-        System.out.println("Syntax error: compilation aborting...\n");
+        System.err.println("Syntax error: compilation aborting...\n");
         System.exit(1);
         return;
     }
@@ -154,12 +154,12 @@ public class Parser {
         eatToken(Kind.TOKEN_WHERE);
         Compound exp = parseCondtition();
         if (current.kind != Kind.TOKEN_EOF) {
-            System.out.println("Expects: " + Kind.TOKEN_EOF.toString());
-            System.out.println("But got: " + current.kind.toString());
+            System.err.println("Expects: " + Kind.TOKEN_EOF.toString());
+            System.err.println("But got: " + current.kind.toString());
             System.exit(1);
         }
-        System.out.println("Compilation completed!");
-        System.out.println("There is no syntax error.");
+        System.err.println("Compilation completed!");
+        System.err.println("There is no syntax error!");
         return new Query(cols, tbl, exp);
     }
 }
