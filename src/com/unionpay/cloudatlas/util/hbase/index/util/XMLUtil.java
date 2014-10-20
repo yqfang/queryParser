@@ -25,11 +25,8 @@ import com.unionpay.cloudatlas.util.hbase.index.bean.Index;
 
 public class XMLUtil {
 
-    public static Set<Index> read(String table) {
-        Set<Index> set = new HashSet<Index>();
-        List<String> list;
-        String indexName;
-        Index index;
+    public static Set<Index> readIndexFromTable(String table) {
+        NodeList nodes = null;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -41,23 +38,8 @@ public class XMLUtil {
 
             XPathExpression expr = xpath.compile("/indexes/index[@table='"
                     + table + "']");
-            NodeList nodes = (NodeList) expr.evaluate(doc,
+            nodes = (NodeList) expr.evaluate(doc,
                     XPathConstants.NODESET);
-            for (int i = 0; i < nodes.getLength(); i++) {
-                list = new ArrayList<String>();
-                Node now = nodes.item(i);
-                indexName = now.getAttributes().getNamedItem("name")
-                        .getNodeValue();
-                NodeList columnNodes = now.getChildNodes();
-                for (int j = 0; j < columnNodes.getLength(); j++) {
-                    Node col = columnNodes.item(j);
-                    if (col != null && col.getNodeType() == Node.ELEMENT_NODE)
-                        list.add(col.getAttributes().getNamedItem("qualifier")
-                                .getNodeValue());
-                }
-                index = new Index(indexName, list);
-                set.add(index);
-            }
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
@@ -66,6 +48,29 @@ public class XMLUtil {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        return readIndexFromNodes(nodes);
+    }
+
+    private static Set<Index> readIndexFromNodes(NodeList nodes) {
+        Set<Index> set = new HashSet<Index>();
+        List<String> list;
+        String indexName;
+        Index index;
+        for (int i = 0; i < nodes.getLength(); i++) {
+            list = new ArrayList<String>();
+            Node now = nodes.item(i);
+            indexName = now.getAttributes().getNamedItem("name")
+                    .getNodeValue();
+            NodeList columnNodes = now.getChildNodes();
+            for (int j = 0; j < columnNodes.getLength(); j++) {
+                Node col = columnNodes.item(j);
+                if (col != null && col.getNodeType() == Node.ELEMENT_NODE)
+                    list.add(col.getAttributes().getNamedItem("qualifier")
+                            .getNodeValue());
+            }
+            index = new Index(indexName, list);
+            set.add(index);
         }
         return set;
     }

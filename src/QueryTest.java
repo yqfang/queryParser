@@ -18,8 +18,7 @@ public class QueryTest {
         Query query;
         while(scan.hasNextLine()){
             query = new Parser(scan.nextLine()).parse();
-            System.out.println(IndexUtil.getBestIndexes(
-                    XMLUtil.read(query.getTable()), query.getConditionCols()));
+            System.out.println(IndexUtil.getBestIndexes(query));
         }
         scan.close();
         

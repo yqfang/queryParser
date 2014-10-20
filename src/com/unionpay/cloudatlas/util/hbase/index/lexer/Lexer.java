@@ -16,17 +16,19 @@ public class Lexer {
         symbolmap.put("and", Kind.TOKEN_AND);
         symbolmap.put("or", Kind.TOKEN_OR);
     }
-    private char read(){
-        return stm[index ++];
+
+    private char read() {
+        return stm[index++];
     }
-    
-    private void reset(){
-        index --;
+
+    private void reset() {
+        index--;
     }
 
     public Lexer(String stm) {
-        this.stm = (stm + ";").toCharArray();//to make sure every query ends with ;
-        
+        this.stm = (stm + ";").toCharArray();// to make sure every query ends
+                                             // with ;
+
         lineNum = 1;
     }
 
@@ -44,7 +46,7 @@ public class Lexer {
         }
         if (-1 == c)
             return new Token(Kind.TOKEN_EOF, lineNum);
-       
+
         if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
             StringBuffer buffer = new StringBuffer();
             do {
@@ -54,24 +56,24 @@ public class Lexer {
                     || (c >= '0' && c <= '9') || (c == '_'));
             reset();
             String str = buffer.toString();
-            if(symbolmap.containsKey(str))
+            if (symbolmap.containsKey(str))
                 return new Token(symbolmap.get(str), lineNum);
             return new Token(Kind.TOKEN_ID, lineNum, str);
         }
 
         if (c >= '0' && c <= '9') {
             StringBuffer buffer = new StringBuffer();
-            do{
+            do {
                 buffer.append(c);
                 c = read();
             } while ((c >= '0' && c <= '9') || c == '.');
             reset();
             return new Token(Kind.TOKEN_LIT, lineNum, buffer.toString());
         }
-        if (c == '"'){
+        if (c == '"') {
             StringBuffer buffer = new StringBuffer();
             c = read();
-            do{
+            do {
                 buffer.append(c);
                 c = read();
                 if (c == ';')
@@ -79,10 +81,10 @@ public class Lexer {
             } while (c != '"');
             return new Token(Kind.TOKEN_LIT, lineNum, buffer.toString());
         }
-        if (c == '\''){
+        if (c == '\'') {
             StringBuffer buffer = new StringBuffer();
             c = read();
-            do{
+            do {
                 buffer.append(c);
                 c = read();
                 if (c == ';')
@@ -90,12 +92,13 @@ public class Lexer {
             } while (c != '\'');
             return new Token(Kind.TOKEN_LIT, lineNum, buffer.toString());
         }
-        
-        if (';' == c){
+
+        if (';' == c) {
             // The value for "lineNum" is now "null",
             // you should modify this to an appropriate
             // line number for the "EOF" token.
-            return new Token(Kind.TOKEN_EOF, lineNum, ";");}
+            return new Token(Kind.TOKEN_EOF, lineNum, ";");
+        }
         switch (c) {
         case '>':
             if (read() == '=') {
@@ -109,27 +112,27 @@ public class Lexer {
                 return new Token(Kind.TOKEN_LTE, lineNum);
             } else {
                 reset();
-                if(read() == '>')
+                if (read() == '>')
                     return new Token(Kind.TOKEN_NOT, lineNum);
                 reset();
                 return new Token(Kind.TOKEN_LT, lineNum);
-            }    
+            }
         case '=':
             return new Token(Kind.TOKEN_EQ, lineNum);
         case '!':
-            if(read() == '=')
+            if (read() == '=')
                 return new Token(Kind.TOKEN_NOT, lineNum);
             reset();
-                throw new Exception("Unknow Token: ! near " + lineNum);
+            throw new Exception("Unknow Token: ! near " + lineNum);
         case '(':
             return new Token(Kind.TOKEN_LPAREN, lineNum);
         case ')':
             return new Token(Kind.TOKEN_RPAREN, lineNum);
         case ',':
             return new Token(Kind.TOKEN_COMMA, lineNum);
-        
+
         default:
-           throw new Exception("Known CHAR: " + String.valueOf(c));
+            throw new Exception("Unknown CHAR: " + String.valueOf(c));
         }
     }
 
@@ -142,7 +145,7 @@ public class Lexer {
             e.printStackTrace();
             System.exit(1);
         }
-           System.out.println(t.toString());
+        System.out.println(t.toString());
         return t;
     }
 }

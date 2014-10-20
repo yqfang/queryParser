@@ -8,55 +8,67 @@ import java.util.Map;
 import java.util.Set;
 
 import com.unionpay.cloudatlas.util.hbase.index.bean.Index;
+import com.unionpay.cloudatlas.util.hbase.index.bean.Query;
 
 public class IndexUtil {
 
     /**
-     * f[i,S]表示前i个集合覆盖列表S,所需要的集合最小数目 则有
-     * f[i,S] = min (f[i-1,S], f[i-1, S除去cS[i]])
-     * 初值f[0,0] = 0，其余f[i,S]都是INF
-     * 
      * @param indexes
      *            the indexes set ready for match
-     * @param a
+     * @param cols
      *            the condition column list
-     * @return the best matched index collection or null if not matched
-     * @throws Exception
+     * @return the best matched indexes Set
      */
-    public static Set<Index> getBestIndexes(Set<Index> indexes,
-            List<String> cols) throws Exception {
+    public static Set<Index> getBestIndexes(Query query) throws Exception {
+        Set<Index> indexes = XMLUtil.readIndexFromTable(query.getTable());
+        List<String> cols = query.getConditionCols();
         int M = 10; // the max value for collection capacity;
         int N = 200; // the max amount of collection
-        int[][] f = new int[N][1 << M];// f(i, S)
-        String[][] s = new String[N][1 << M];// s(i, S)
-        List<List<String>> c = new ArrayList<List<String>>(); // the string
-        // collection
-        Map<String, Integer> id = new HashMap<String, Integer>();// string map
+        int[][] f = new int[N][1 << M];// 构造最优解f(i, S)
+        String[][] s = new String[N][1 << M];// 构造最优解值s(i, S)
+        List<List<String>> c = new ArrayList<List<String>>();// 存放过滤后的String列表
+        Map<String, Integer> id = new HashMap<String, Integer>();// cols 中
+                                                                 // 的cols映射表
         Map<String, List<String>> cmap = new HashMap<String, List<String>>();// collection
-        Map<String, List<String>> mp = new HashMap<String, List<String>>();// a map for the indexes set
-        List<List<String>> pc = new ArrayList<List<String>>();
+        Map<String, List<String>> mp = new HashMap<String, List<String>>();// index名和index
+                                                                           // cols的映射表
+        List<List<String>> pc = new ArrayList<List<String>>();// 存放过滤前的String列表
+        // 结果集合
         Set<Index> result = new HashSet<Index>();
+        // index名和index cols的映射表的反转（因为是一一对应）
         Map<List<String>, String> reverseMp = new HashMap<List<String>, String>();
-        int cid = 0; // String id
-        int[] bc;
-        int ba = 0;// binary string collection
+        int cid = 0; // cols映射表中每个String对应的自增id
+        int[] bc; // 存放待查索引每个集合的压缩状态
+        int ba = 0;// 存放待匹配列的压缩状态
         int INF = (1 << 28);
-        for(Index index : indexes){
+        /*
+         * 构造mp
+         */
+        for (Index index : indexes) {
             mp.put(index.getName(), index.getCols());
         }
         /*
-         * reverse the mp map
+         * 通过反转mp构造reverseMp
          */
         for (String str : mp.keySet()) {
             reverseMp.put(mp.get(str), str);
         }
+        /*
+         * 把待匹配列存入id字典
+         */
         for (String str : cols) {
             if (!id.containsKey(str))
                 id.put(str, cid++);
         }
+        /*
+         * 构造pc
+         */
         for (String str : mp.keySet()) {
             pc.add(mp.get(str));
         }
+        /*
+         * 通过过滤pc构造c
+         */
         for (List<String> pl : pc) {
             List<String> l = new ArrayList<String>();
             for (String str : pl)
@@ -65,6 +77,9 @@ public class IndexUtil {
             if (l.size() == pl.size())
                 c.add(l);
         }
+        /*
+         * 确定压缩状态数组bc的大小
+         */
         bc = new int[c.size() + 1];
         /*
          * construct binary a collection to a int value;
@@ -74,7 +89,6 @@ public class IndexUtil {
             iid = id.get(str);
             ba = ba | (1 << iid);
         }
-        // System.out.println(ba);
         /*
          * construct binary c collection
          */
@@ -86,14 +100,15 @@ public class IndexUtil {
             cmap.put(String.valueOf(bc[i]), c.get(i - 1));
         }
         /*
-         * the dp function
+         * f[i,S]表示前i个集合覆盖列表S,所需要的集合最小数目 则有 f[i,S] = min(f[i-1,S], f[i-1,
+         * S除去cS[i]] + 1) 初值f[0,0] = 0，其余f[i,S]都是INF
          */
         for (int S = 0; S < (1 << cid); S++)
             f[0][S] = INF;
         f[0][0] = 0;
         for (int i = 1; i <= c.size(); i++) {
             for (int S = 0; S < (1 << cid); S++) {
-                int zS = (S ^ (bc[i] & S));
+                int zS = (S ^ (bc[i] & S));// zS是集合S和集合bc[i]的差集
                 if (f[i - 1][S] < f[i - 1][zS] + 1) {
                     f[i][S] = f[i - 1][S];
                     s[i][S] = s[i - 1][S];
@@ -103,9 +118,11 @@ public class IndexUtil {
                 }
             }
         }
+        /*
+         * 解析最优解值
+         */
         String rss = s[c.size()][(1 << cid) - 1];
-        if (null == rss)
-        {
+        if (null == rss) {
             System.err.println("Go to hive !");
             return result;
         }

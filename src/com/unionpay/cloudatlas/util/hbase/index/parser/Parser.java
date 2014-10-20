@@ -158,8 +158,8 @@ public class Parser {
             System.err.println("But got: " + current.kind.toString());
             System.exit(1);
         }
-        System.err.println("Compilation completed!");
-        System.err.println("There is no syntax error!");
+        System.out.println("Compilation completed!");
+        System.out.println("There is no syntax error!");
         return new Query(cols, tbl, exp);
     }
 }
